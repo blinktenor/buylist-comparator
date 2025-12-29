@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import CardListInput from './components/CardListInput';
 import CacheStatus from './components/CacheStatus';
 import CardResults from './components/CardResults';
@@ -12,24 +12,23 @@ function App() {
   const [cacheInfo, setCacheInfo] = useState(getCacheStatus());
   const [submittedCards, setSubmittedCards] = useState([]);
 
-  useEffect(() => {
-    // Load data on mount if cache exists
-    const loadData = async () => {
-      if (cacheInfo.isValid && cacheInfo.hasCache) {
-        setLoading(true);
-        try {
-          const data = await fetchMTGData();
-          setMtgData(data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
+  const loadData = useCallback(async () => {
+    if (cacheInfo.isValid && cacheInfo.hasCache) {
+      setLoading(true);
+      try {
+        const data = await fetchMTGData();
+        setMtgData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    };
-    
+    }
+  }, [cacheInfo.isValid, cacheInfo.hasCache]);
+
+  useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   const handleCardsSubmit = async (cards) => {
     setSubmittedCards(cards);

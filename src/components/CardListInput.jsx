@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './CardListInput.css';
+
+// Utility function to parse card list
+const parseCardList = (cardListText) => {
+  return cardListText
+    .split('\n')
+    .map(card => card.trim())
+    .filter(card => card.length > 0);
+};
 
 const CardListInput = ({ onCardsSubmit }) => {
   const [cardList, setCardList] = useState('');
 
+  // Memoize card count to avoid recalculation on every render
+  const cardCount = useMemo(() => parseCardList(cardList).length, [cardList]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (cardList.trim()) {
-      // Split by newlines and filter out empty lines
-      const cards = cardList
-        .split('\n')
-        .map(card => card.trim())
-        .filter(card => card.length > 0);
-      
+      const cards = parseCardList(cardList);
       onCardsSubmit(cards);
     }
   };
@@ -45,7 +51,7 @@ const CardListInput = ({ onCardsSubmit }) => {
         </div>
       </form>
       <p className="card-count">
-        Cards entered: {cardList.split('\n').filter(line => line.trim().length > 0).length}
+        Cards entered: {cardCount}
       </p>
     </div>
   );
