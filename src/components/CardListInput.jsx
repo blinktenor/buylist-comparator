@@ -38,7 +38,11 @@ const CardListInput = ({ onCardsSubmit }) => {
           className="card-textarea"
           value={cardList}
           onChange={(e) => setCardList(e.target.value)}
-          placeholder="Example:&#10;Lightning Bolt&#10;Black Lotus&#10;Counterspell&#10;Sol Ring"
+          placeholder="Example:
+Lightning Bolt
+Black Lotus
+Counterspell
+Sol Ring"
           rows={15}
         />
         <div className="button-group">

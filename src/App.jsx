@@ -12,6 +12,7 @@ function App() {
   const [cacheInfo, setCacheInfo] = useState(getCacheStatus());
   const [submittedCards, setSubmittedCards] = useState([]);
 
+  // Load cached data on mount if available
   const loadData = useCallback(async () => {
     if (cacheInfo.isValid && cacheInfo.hasCache) {
       setLoading(true);

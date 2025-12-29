@@ -21,17 +21,19 @@ const CardResults = ({ cards, mtgData }) => {
       <div className="results-list">
         {cards.map((cardName, index) => {
           const cardInfo = getCardInfo(cardName);
+          const firstCard = cardInfo?.[0];
+          
           return (
             <div key={index} className="card-result-item">
               <div className="card-name">{cardName}</div>
               {cardInfo ? (
                 <div className="card-info">
                   <p>Found in database</p>
-                  {cardInfo[0] && (
+                  {firstCard && (
                     <>
-                      {cardInfo[0].type && <p>Type: {cardInfo[0].type}</p>}
-                      {cardInfo[0].manaCost && <p>Mana Cost: {cardInfo[0].manaCost}</p>}
-                      {cardInfo[0].text && <p className="card-text">{cardInfo[0].text}</p>}
+                      {firstCard.type && <p>Type: {firstCard.type}</p>}
+                      {firstCard.manaCost && <p>Mana Cost: {firstCard.manaCost}</p>}
+                      {firstCard.text && <p className="card-text">{firstCard.text}</p>}
                     </>
                   )}
                 </div>
