@@ -17,8 +17,8 @@ function App() {
     if (cacheInfo.isValid && cacheInfo.hasCache) {
       setLoading(true);
       try {
-        const data = await fetchMTGData();
-        setMtgData(data);
+        const data = await fetchMTGData('2ED'); // Example set code
+        setMtgData(data, '2ED');
       } catch (err) {
         setError(err.message);
       } finally {
@@ -39,8 +39,8 @@ function App() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchMTGData();
-        setMtgData(data);
+        const data = await fetchMTGData('2ED'); // Example set code
+        setMtgData(data, '2ED');
         setCacheInfo(getCacheStatus());
       } catch (err) {
         setError(`Failed to load MTG data: ${err.message}`);

@@ -36,10 +36,10 @@ const getCachedData = () => {
  * Save data to cache with today's date
  * @param {Object} data
  */
-const setCachedData = (data) => {
+const setCachedData = (data, set) => {
   const today = new Date().toDateString();
-  localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-  localStorage.setItem(CACHE_DATE_KEY, today);
+  localStorage.setItem(`CACHE_KEY_${set}`, JSON.stringify(data));
+  localStorage.setItem(`CACHE_DATE_KEY_${set}`, today);
 };
 
 /**
@@ -48,7 +48,7 @@ const setCachedData = (data) => {
  * @param {string} endpoint - The endpoint to fetch (e.g., 'AtomicCards.json')
  * @returns {Promise<Object>}
  */
-export const fetchMTGData = async () => {
+export const fetchMTGData = async (set) => {
   // Check cache first
   const cachedData = getCachedData();
   if (cachedData) {
@@ -59,7 +59,7 @@ export const fetchMTGData = async () => {
   // Fetch from API
   console.log('Fetching fresh MTG data from API...');
   try {
-    const response = await fetch(`${API_BASE_URL}`);
+    const response = await fetch(`${API_BASE_URL}/${set}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -67,7 +67,7 @@ export const fetchMTGData = async () => {
     const data = await response.json();
     
     // Cache the data
-    setCachedData(data);
+    setCachedData(data, set);
     console.log('MTG data cached successfully');
     
     return data;
