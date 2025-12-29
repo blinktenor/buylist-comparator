@@ -48,7 +48,7 @@ const setCachedData = (data) => {
  * @param {string} endpoint - The endpoint to fetch (e.g., 'AtomicCards.json')
  * @returns {Promise<Object>}
  */
-export const fetchMTGData = async (endpoint = 'AtomicCards.json') => {
+export const fetchMTGData = async () => {
   // Check cache first
   const cachedData = getCachedData();
   if (cachedData) {
@@ -59,7 +59,7 @@ export const fetchMTGData = async (endpoint = 'AtomicCards.json') => {
   // Fetch from API
   console.log('Fetching fresh MTG data from API...');
   try {
-    const response = await fetch(`${API_BASE_URL}/${endpoint}`);
+    const response = await fetch(`${API_BASE_URL}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
