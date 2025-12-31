@@ -6,53 +6,72 @@ import { fetchMTGData, clearCache, getCacheStatus } from './api/mtgJsonService';
 import './App.css';
 
 function App() {
-  const [mtgData, setMtgData] = useState(null);
+  const [mtgData, setMtgData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cacheInfo, setCacheInfo] = useState(getCacheStatus());
   const [submittedCards, setSubmittedCards] = useState([]);
 
-  // Load cached data on mount if available
-  const loadData = useCallback(async () => {
-    if (cacheInfo.isValid && cacheInfo.hasCache) {
-      setLoading(true);
-      try {
-        const data = await fetchMTGData('2ED'); // Example set code
-        setMtgData(data, '2ED');
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  // Fetch MTG data for multiple sets
+  const fetchSetsData = async (setCodes) => {
+    const uniqueSets = [...new Set(setCodes.map(code => code.toUpperCase()))];
+    const dataPromises = uniqueSets.map(setCode => 
+      fetchMTGData(setCode)
+        .then(data => ({ setCode, data }))
+        .catch(err => ({ setCode, error: err.message }))
+    );
+    
+    const results = await Promise.all(dataPromises);
+    const newMtgData = {};
+    const errors = [];
+    
+    results.forEach(result => {
+      if (result.error) {
+        errors.push(`${result.setCode}: ${result.error}`);
+      } else {
+        newMtgData[result.setCode] = result.data;
       }
-    }
-  }, [cacheInfo.isValid, cacheInfo.hasCache]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+    });
+    
+    return { data: newMtgData, errors };
+  };
 
   const handleCardsSubmit = async (cards) => {
     setSubmittedCards(cards);
+    setLoading(true);
+    setError(null);
     
-    // Fetch MTG data if not already loaded
-    if (!mtgData) {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await fetchMTGData('2ED'); // Example set code
-        setMtgData(data, '2ED');
-        setCacheInfo(getCacheStatus());
-      } catch (err) {
-        setError(`Failed to load MTG data: ${err.message}`);
-      } finally {
+    try {
+      // Extract unique set codes from cards
+      const setCodes = cards
+        .map(card => card.setCode)
+        .filter(setCode => setCode !== null);
+      
+      if (setCodes.length === 0) {
+        setError('No valid set codes found in cards');
         setLoading(false);
+        return;
       }
+      
+      // Fetch data for all sets
+      const { data, errors } = await fetchSetsData(setCodes);
+      setMtgData(data);
+      
+      if (errors.length > 0) {
+        setError(`Failed to load some sets: ${errors.join(', ')}`);
+      }
+      
+      setCacheInfo(getCacheStatus());
+    } catch (err) {
+      setError(`Failed to load MTG data: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleClearCache = () => {
     clearCache();
-    setMtgData(null);
+    setMtgData({});
     setCacheInfo(getCacheStatus());
     setSubmittedCards([]);
   };
@@ -81,7 +100,7 @@ function App() {
       
       <CardListInput onCardsSubmit={handleCardsSubmit} />
       
-      {submittedCards.length > 0 && mtgData && !loading && (
+      {submittedCards.length > 0 && Object.keys(mtgData).length > 0 && !loading && (
         <CardResults cards={submittedCards} mtgData={mtgData} />
       )}
       

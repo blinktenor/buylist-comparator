@@ -8,10 +8,10 @@ const CacheStatus = ({ cacheInfo, onClearCache }) => {
         <span className={`status-indicator ${cacheInfo.isValid ? 'valid' : 'invalid'}`}>
           {cacheInfo.isValid ? '✓ Cache Valid' : '✗ No Valid Cache'}
         </span>
-        {cacheInfo.cachedDate && (
-          <p>Cached on: {cacheInfo.cachedDate}</p>
-        )}
         <p>Current date: {cacheInfo.currentDate}</p>
+        {cacheInfo.cachedSets && cacheInfo.cachedSets.length > 0 && (
+          <p>Cached sets: {cacheInfo.cachedSets.join(', ')}</p>
+        )}
       </div>
       {cacheInfo.hasCache && (
         <button onClick={onClearCache} className="clear-cache-btn">

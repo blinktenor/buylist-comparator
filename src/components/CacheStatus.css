@@ -2,14 +2,15 @@
   max-width: 800px;
   margin: 1rem auto;
   padding: 1rem;
-  background: #fff;
+  background: #E8D4A8;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #8B6914;
 }
 
 .cache-status h3 {
   margin-top: 0;
-  color: #333;
+  color: #3D3020;
   font-size: 1.2rem;
 }
 
@@ -26,25 +27,27 @@
 }
 
 .status-indicator.valid {
-  background: #d4edda;
-  color: #155724;
+  background: #B8D4A8;
+  color: #2D5016;
+  border: 1px solid #7BA55C;
 }
 
 .status-indicator.invalid {
-  background: #f8d7da;
-  color: #721c24;
+  background: #E8BBA8;
+  color: #5C3020;
+  border: 1px solid #A5715C;
 }
 
 .status-info p {
   margin: 0.5rem 0;
-  color: #666;
+  color: #5C4A2E;
   font-size: 0.9rem;
 }
 
 .clear-cache-btn {
   padding: 0.5rem 1rem;
-  background: #dc3545;
-  color: white;
+  background: #8B4513;
+  color: #F4E4BC;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -53,7 +56,7 @@
 }
 
 .clear-cache-btn:hover {
-  background: #c82333;
+  background: #6B3410;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }

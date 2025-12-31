@@ -2,19 +2,20 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #f9f9f9;
+  background: #E8D4A8;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid #8B6914;
 }
 
 .card-list-input h2 {
   margin-top: 0;
-  color: #333;
+  color: #3D3020;
   font-size: 1.5rem;
 }
 
 .instructions {
-  color: #666;
+  color: #5C4A2E;
   margin-bottom: 1rem;
   font-size: 0.95rem;
 }
@@ -23,18 +24,20 @@
   width: 100%;
   min-height: 300px;
   padding: 1rem;
-  border: 2px solid #ddd;
+  border: 2px solid #8B6914;
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.95rem;
   resize: vertical;
   box-sizing: border-box;
   transition: border-color 0.3s;
+  background: #F4E4BC;
+  color: #3D3020;
 }
 
 .card-textarea:focus {
   outline: none;
-  border-color: #4a90e2;
+  border-color: #0E6BA8;
 }
 
 .button-group {
@@ -55,29 +58,37 @@
 }
 
 .submit-btn {
-  background: #4a90e2;
+  background: #0E6BA8;
   color: white;
 }
 
-.submit-btn:hover {
-  background: #357abd;
+.submit-btn:hover:not(:disabled) {
+  background: #0A5280;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn:disabled {
+  background: #9E9074;
+  color: #5C4A2E;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .clear-btn {
-  background: #e0e0e0;
-  color: #333;
+  background: #C9B896;
+  color: #3D3020;
+  border: 1px solid #8B6914;
 }
 
 .clear-btn:hover {
-  background: #d0d0d0;
+  background: #B8A785;
   transform: translateY(-1px);
 }
 
 .card-count {
   margin-top: 1rem;
-  color: #666;
+  color: #5C4A2E;
   font-size: 0.9rem;
   text-align: right;
 }
