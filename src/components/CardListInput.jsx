@@ -8,28 +8,41 @@ const parseCardList = (cardListText) => {
     .map(card => card.trim())
     .filter(card => card.length > 0)
     .map(card => {
+      // Check for foil designation (*F* at the end)
+      const isFoil = card.includes('*F*');
+      const cardWithoutFoil = card.replace(/\s*\*F\*\s*$/, '').trim();
+      
       // Check for pipe format: "Card Name | SET"
-      if (card.includes('|')) {
-        const parts = card.split('|').map(part => part.trim());
+      if (cardWithoutFoil.includes('|')) {
+        const parts = cardWithoutFoil.split('|').map(part => part.trim());
+        // Remove leading quantity like "1x " or "2 "
+        const nameWithoutQuantity = parts[0].replace(/^\d+x?\s+/, '');
         return {
-          name: parts[0],
-          setCode: parts[1] || null
+          name: nameWithoutQuantity,
+          setCode: parts[1] || null,
+          isFoil,
+          rawInput: card
         };
       }
       
-      // Check for collection format: "1x Card Name (set) number [tags]"
-      const collectionMatch = card.match(/^(\d+x\s+)?(.+?)\s+\(([^)]+)\)/);
+      // Check for collection format: "1 Card Name (set) number" or "1x Card Name (set) number *F*"
+      const collectionMatch = cardWithoutFoil.match(/^(\d+x?\s+)?(.+?)\s+\(([^)]+)\)\s*(\d+)?/);
       if (collectionMatch) {
         return {
           name: collectionMatch[2].trim(),
-          setCode: collectionMatch[3].trim().toLowerCase()
+          setCode: collectionMatch[3].trim().toUpperCase(),
+          isFoil,
+          rawInput: card
         };
       }
       
-      // If no format matches, return just the card name with no set
+      // If no format matches, try to remove quantity prefix anyway
+      const nameWithoutQuantity = cardWithoutFoil.replace(/^\d+x?\s+/, '');
       return {
-        name: card,
-        setCode: null
+        name: nameWithoutQuantity,
+        setCode: null,
+        isFoil,
+        rawInput: card
       };
     });
 };
@@ -63,9 +76,10 @@ const CardListInput = ({ onCardsSubmit }) => {
     <div className="card-list-input">
       <h2>Enter Your Card List</h2>
       <p className="instructions">
-        Enter one card per line. Supports two formats:
+        Enter one card per line. Supports multiple formats:
         <br />• Card Name | SET
-        <br />• 1x Card Name (set) number [tags]
+        <br />• 1 Card Name (SET) number
+        <br />• 1x Card Name (SET) number *F* (foil)
       </p>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -73,9 +87,9 @@ const CardListInput = ({ onCardsSubmit }) => {
           value={cardList}
           onChange={(e) => setCardList(e.target.value)}
           placeholder="Lightning Bolt | LEA
-Black Lotus | LEA
-1x Amonkhet Raceway (dft) 248
-1x Umbral Collar Zealot (eoe) 395"
+1 Avatar's Wrath (TLA) 12
+1x Haliya, Guided by Light (EOE) 19
+1 The Rise of Sozin (TLA) 117 *F*"
           rows={15}
         /> 
         <div className="button-group">

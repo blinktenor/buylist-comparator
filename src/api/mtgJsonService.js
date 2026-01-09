@@ -2,6 +2,8 @@
 
 const CACHE_KEY = 'mtgjson_data';
 const CACHE_DATE_KEY = 'mtgjson_cache_date';
+const PRICES_CACHE_KEY = 'mtgjson_prices';
+const PRICES_CACHE_DATE_KEY = 'mtgjson_prices_date';
 const API_BASE_URL = 'https://mtgjson.com/api/v5';
 
 /**
@@ -65,11 +67,8 @@ export const fetchMTGData = async (set) => {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      debugger;
       throw new Error(`HTTP error! status: ${response.status} - URL: ${url} `);
     }
-
-    debugger;
     
     const data = await response.json();
     
@@ -117,10 +116,126 @@ export const getCacheStatus = () => {
     return cachedDate === today;
   });
   
+  // Get detailed info about each cached set
+  const setDetails = cachedSets.map(set => {
+    const cachedData = localStorage.getItem(`${CACHE_KEY}_${set}`);
+    const cachedDate = localStorage.getItem(`${CACHE_DATE_KEY}_${set}`);
+    let cardCount = 0;
+    
+    if (cachedData) {
+      try {
+        const data = JSON.parse(cachedData);
+        if (data && data.data && data.data.cards) {
+          cardCount = data.data.cards.length;
+        }
+      } catch (e) {
+        console.error(`Error parsing cache for ${set}:`, e);
+      }
+    }
+    
+    return {
+      setCode: set,
+      cachedDate,
+      cardCount,
+      isValid: cachedDate === today
+    };
+  });
+  
   return {
     hasCache,
     isValid,
     cachedSets,
+    setDetails,
     currentDate: today
   };
+};
+
+/**
+ * Get detailed information about a specific cached set
+ * @param {string} set - The set code
+ * @returns {Object|null}
+ */
+export const getCachedSetDetails = (set) => {
+  const cachedData = getCachedData(set);
+  if (!cachedData) return null;
+  
+  return {
+    setCode: set,
+    cardCount: cachedData?.data?.cards?.length || 0,
+    cards: cachedData?.data?.cards || [],
+    cachedDate: localStorage.getItem(`${CACHE_DATE_KEY}_${set}`)
+  };
+};
+
+/**
+ * Check if pricing cache is valid (from today)
+ * @returns {boolean}
+ */
+const isPricingCacheValid = () => {
+  const cachedDate = localStorage.getItem(PRICES_CACHE_DATE_KEY);
+  if (!cachedDate) return false;
+  
+  const today = new Date().toDateString();
+  return cachedDate === today;
+};
+
+/**
+ * Get cached pricing data from localStorage
+ * @returns {Object|null}
+ */
+const getCachedPricingData = () => {
+  if (!isPricingCacheValid()) {
+    // Invalidate cache if not from today
+    localStorage.removeItem(PRICES_CACHE_KEY);
+    localStorage.removeItem(PRICES_CACHE_DATE_KEY);
+    return null;
+  }
+  
+  const cachedData = localStorage.getItem(PRICES_CACHE_KEY);
+  return cachedData ? JSON.parse(cachedData) : null;
+};
+
+/**
+ * Save pricing data to cache with today's date
+ * @param {Object} data
+ */
+const setCachedPricingData = (data) => {
+  const today = new Date().toDateString();
+  localStorage.setItem(PRICES_CACHE_KEY, JSON.stringify(data));
+  localStorage.setItem(PRICES_CACHE_DATE_KEY, today);
+};
+
+/**
+ * Fetch AllPricesToday.json with caching
+ * Checks cache first, only calls API if cache is invalid
+ * @returns {Promise<Object>}
+ */
+export const fetchPricingData = async () => {
+  // Check cache first
+  const cachedData = getCachedPricingData();
+  if (cachedData) {
+    console.log('Using cached pricing data from today');
+    return cachedData;
+  }
+  
+  // Fetch from API
+  console.log('Fetching fresh pricing data from API...');
+  const url = `${API_BASE_URL}/AllPricesToday.json`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status} - URL: ${url}`);
+    }
+    
+    const data = await response.json();
+    
+    // Cache the data
+    setCachedPricingData(data);
+    console.log('Pricing data cached successfully');
+    
+    return data;
+  } catch (error) {
+    console.error(`Error fetching pricing data from ${url}:`, error);
+    throw new Error(`Failed to fetch pricing data from ${url}: ${error.message}`);
+  }
 };

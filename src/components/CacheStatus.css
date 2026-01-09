@@ -60,3 +60,134 @@
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
+
+.set-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #C9B896;
+}
+
+.set-details h4 {
+  margin: 0 0 0.5rem 0;
+  color: #3D3020;
+  font-size: 1rem;
+}
+
+.set-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.set-list li {
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  background: #F4E4BC;
+  border-radius: 4px;
+  border-left: 3px solid #0E6BA8;
+  color: #3D3020;
+  font-size: 0.9rem;
+}
+
+.set-list li.invalid-set {
+  opacity: 0.6;
+  border-left-color: #A5715C;
+}
+
+.set-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.set-header:hover {
+  background: rgba(139, 105, 20, 0.1);
+  border-radius: 2px;
+}
+
+.expand-icon {
+  font-size: 0.8rem;
+  color: #0E6BA8;
+  width: 1rem;
+  display: inline-block;
+}
+
+.cache-date {
+  font-size: 0.85rem;
+  color: #5C4A2E;
+  font-style: italic;
+}
+
+.card-list-container {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-item {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  color: #3D3020;
+  border-bottom: 1px solid rgba(139, 105, 20, 0.1);
+}
+
+.card-item.has-buylist-indicator {
+  background: rgba(123, 165, 92, 0.1);
+  border-left: 2px solid #7BA55C;
+  padding-left: 0.75rem;
+}
+
+.card-item:last-child {
+  border-bottom: none;
+}
+
+.card-item-name {
+  margin-bottom: 0.25rem;
+}
+
+.card-item .mana-cost {
+  color: #0E6BA8;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.card-buylist-info {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.buylist-tag {
+  display: inline-block;
+  background: #0E6BA8;
+  color: white;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.buylist-tag.foil {
+  background: linear-gradient(135deg, #FFA500, #FFD700);
+  color: #3D3020;
+}
+
+.more-cards {
+  margin: 0.5rem 0 0 0;
+  padding: 0.5rem;
+  text-align: center;
+  color: #5C4A2E;
+  font-style: italic;
+  font-size: 0.85rem;
+}

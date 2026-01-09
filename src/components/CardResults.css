@@ -15,6 +15,16 @@
   margin-bottom: 1.5rem;
 }
 
+.buylist-summary {
+  background: rgba(14, 107, 168, 0.15);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #0E6BA8;
+  color: #3D3020;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
 .results-list {
   display: flex;
   flex-direction: column;
@@ -26,6 +36,17 @@
   background: #F4E4BC;
   border-radius: 4px;
   border-left: 4px solid #0E6BA8;
+  transition: all 0.2s;
+}
+
+.card-result-item.has-buylist {
+  background: #E8F4E8;
+  border-left-color: #7BA55C;
+  box-shadow: 0 1px 3px rgba(123, 165, 92, 0.2);
+}
+
+.card-result-item.has-buylist .card-name {
+  color: #2D5016;
 }
 
 .card-name {
@@ -33,6 +54,27 @@
   font-size: 1.1rem;
   color: #3D3020;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.set-code {
+  font-weight: 600;
+  color: #0E6BA8;
+}
+
+.foil-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
+  color: #3D3020;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(255, 165, 0, 0.5);
+  border: 1px solid #FFA500;
 }
 
 .card-info {
@@ -56,4 +98,89 @@
 .card-info.not-found {
   color: #dc3545;
   font-weight: 600;
+}
+
+.buylist-info {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(14, 107, 168, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #0E6BA8;
+}
+
+.buylist-prices {
+  margin: 0.5rem 0;
+}
+
+.buylist-price {
+  font-size: 1.1rem;
+  color: #2D5016;
+  margin: 0.5rem 0;
+}
+
+.buylist-price strong {
+  color: #7BA55C;
+  font-size: 1.2rem;
+}
+
+.buylist-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #0E6BA8;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.buylist-button:hover {
+  background: #0A5280;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buylist-links {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+}
+
+.buylist-links li {
+  padding: 0.25rem 0;
+}
+
+.buylist-links a {
+  color: #0E6BA8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.buylist-links a:hover {
+  text-decoration: underline;
+  color: #0A5280;
+}
+
+.price-info {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #D4AF37;
+}
+
+.price-info p {
+  margin: 0.25rem 0;
+}
+
+.price-note {
+  color: #8B6914;
+  font-style: italic;
+}
+
+.no-buylist {
+  color: #8B6914;
+  font-style: italic;
+  margin-top: 0.5rem;
 }

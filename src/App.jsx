@@ -2,36 +2,47 @@ import { useState, useEffect, useCallback } from 'react';
 import CardListInput from './components/CardListInput';
 import CacheStatus from './components/CacheStatus';
 import CardResults from './components/CardResults';
-import { fetchMTGData, clearCache, getCacheStatus } from './api/mtgJsonService';
+import { fetchMTGData, clearCache, getCacheStatus, fetchPricingData } from './api/mtgJsonService';
 import './App.css';
 
 function App() {
   const [mtgData, setMtgData] = useState({});
+  const [pricingData, setPricingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cacheInfo, setCacheInfo] = useState(getCacheStatus());
   const [submittedCards, setSubmittedCards] = useState([]);
 
-  // Fetch MTG data for multiple sets
+  // Load pricing data on page load
+  useEffect(() => {
+    const loadPricingData = async () => {
+      try {
+        const prices = await fetchPricingData();
+        setPricingData(prices);
+      } catch (err) {
+        console.error('Failed to load pricing data:', err);
+        // Don't block the app if pricing data fails to load
+      }
+    };
+    
+    loadPricingData();
+  }, []);
+
+  // Fetch MTG data for multiple sets sequentially to avoid spamming the server
   const fetchSetsData = async (setCodes) => {
     const uniqueSets = [...new Set(setCodes.map(code => code.toUpperCase()))];
-    const dataPromises = uniqueSets.map(setCode => 
-      fetchMTGData(setCode)
-        .then(data => ({ setCode, data }))
-        .catch(err => ({ setCode, error: err.message }))
-    );
-    
-    const results = await Promise.all(dataPromises);
     const newMtgData = {};
     const errors = [];
     
-    results.forEach(result => {
-      if (result.error) {
-        errors.push(`${result.setCode}: ${result.error}`);
-      } else {
-        newMtgData[result.setCode] = result.data;
+    // Fetch sets sequentially - each request waits for the previous to complete
+    for (const setCode of uniqueSets) {
+      try {
+        const data = await fetchMTGData(setCode);
+        newMtgData[setCode] = data;
+      } catch (err) {
+        errors.push(`${setCode}: ${err.message}`);
       }
-    });
+    }
     
     return { data: newMtgData, errors };
   };
@@ -79,11 +90,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>🃏 Buylist Comparator</h1>
+        <h1>🀏 Buylist Comparator</h1>
         <p>Compare prices for buyable MTG cards</p>
       </header>
       
-      <CacheStatus cacheInfo={cacheInfo} onClearCache={handleClearCache} />
+      <CacheStatus cacheInfo={cacheInfo} onClearCache={handleClearCache} pricingData={pricingData} />
       
       {error && (
         <div className="error-message">
@@ -101,7 +112,7 @@ function App() {
       <CardListInput onCardsSubmit={handleCardsSubmit} />
       
       {submittedCards.length > 0 && Object.keys(mtgData).length > 0 && !loading && (
-        <CardResults cards={submittedCards} mtgData={mtgData} />
+        <CardResults cards={submittedCards} mtgData={mtgData} pricingData={pricingData} />
       )}
       
       <footer className="App-footer">
